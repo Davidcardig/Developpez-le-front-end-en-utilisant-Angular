@@ -1,0 +1,51 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .title {
+    background: #26989a;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 500;
+    padding: 12px 32px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 16px;
+  }
+  
+  .cardBox {
+    border: 2px solid #26989a;
+    border-radius: 10px;
+    padding: 16px 32px;
+    min-width: 150px;
+    text-align: center;
+    background: #fff;
+  }
+  
+  .cardLabel {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .cardValue {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #222;
+  }
+
+  .chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
