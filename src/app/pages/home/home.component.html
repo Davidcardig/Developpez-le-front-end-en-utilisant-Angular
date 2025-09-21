@@ -3,16 +3,16 @@
     <div class="row">
       <div class="cardBox">
         <div class="cardLabel">Number of JO</div>
-        <div class="cardValue">{{ numberOfJOs }}</div>
+        <div class="cardValue">{{ numberJO }}</div>
       </div>
       <div class="cardBox">
         <div class="cardLabel">Number of countries</div>
-        <div class="cardValue">{{ numberOfCountries }}</div>
+        <div class="cardValue">{{ numberCountries }}</div>
       </div>
     </div>
   </div>
   
-  <div class="chart-container">
+  <div class="chart-container" (mousemove)="onMouseMove($event)">
     <ngx-charts-pie-chart
     [results]="chartData"
     [gradient]="false"
@@ -23,10 +23,15 @@
     [gradient]="false"
     [view]="[700, 500]"
     [legend]="false"
-  
-
+    [tooltipDisabled]="true"
+    (activate)="onActivate($event)"
+    (deactivate)="onDeactivate($event)"
     >
- 
+  
   </ngx-charts-pie-chart> 
-    
+ <div *ngIf="hoverInfo" class="bulleInfos" [ngStyle]="{'top.px': hoverInfo.y, 'left.px': hoverInfo.x}">
+    <div>{{ hoverInfo.name }}</div>
+    <div>🏅 {{ hoverInfo.value }}</div>
+    <span class="bulleWindow"></span>
+  </div>
   </div>

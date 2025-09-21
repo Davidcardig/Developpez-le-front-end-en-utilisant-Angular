@@ -10,7 +10,7 @@ import { Olympic } from '../models/Olympic';
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
   private olympics$ = new BehaviorSubject<Olympic[] | null | undefined>(undefined);
-
+ 
   constructor(private http: HttpClient) {}
 
   loadInitialData() {
@@ -28,5 +28,17 @@ export class OlympicService {
 
   getOlympics() {
     return this.olympics$.asObservable();
+  }
+
+  
+  public getCountryName(event: any): string {
+    if (typeof event?.value?.name === 'string') return event.value.name;
+    return '';
+  }
+
+  public getMedalCount(country: string): number {
+    const olympics = this.olympics$.getValue() || [];
+    const found: Olympic | undefined = olympics.find(o => o.country === country);
+    return found?.participations.reduce((total, p) => total + (p.medalsCount || 0), 0) || 0;
   }
 }

@@ -48,4 +48,23 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    position: relative;
   }
+.bulleInfos {
+  position: fixed; 
+  background: #26989a;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+
+}
+.bulleWindow {
+  position: absolute;
+  left: 7%;
+  bottom: -6px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #26989a; /* caret pointing down */
+}
