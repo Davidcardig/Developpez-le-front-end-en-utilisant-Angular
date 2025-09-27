@@ -1,29 +1,85 @@
-# OlympicGamesStarter
+# 🏅 Olympic Games Dashboard
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
+Application Angular pour visualiser les données des Jeux Olympiques avec des graphiques interactifs.
 
-Don't forget to install your node_modules before starting (`npm install`).
+## 🚀 Lancement de l'application
 
-## Development server
+### Prérequis
+- Node.js (version 18+)
+- Angular CLI
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Installation et démarrage
+```bash
+# 1. Installer les dépendances
+npm install
 
-## Build
+# 2. Lancer le serveur de développement
+ng serve
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# 3. Ouvrir http://localhost:4200 dans votre navigateur
+```
 
-## Where to start
+## 📋 Fonctionnement de l'application
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+### Architecture
+```
+src/app/
+├── core/
+│   ├── models/           # Interfaces TypeScript
+│   └── services/         # Services (logique métier)
+├── pages/
+│   ├── home/            # Page d'accueil avec graphique général
+│   ├── detail/          # Page détail d'un pays
+│   └── not-found/       # Page 404
+└── app-routing.module.ts # Configuration des routes
+```
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+### Flux de données
+1. **Chargement initial** : `olympic.service.ts` charge les données depuis `assets/mock/olympic.json`
+2. **Page d'accueil** : Affiche un graphique avec tous les pays et leurs médailles totales
+3. **Navigation** : Clic sur un pays → redirection vers la page détail
+4. **Page détail** : Affiche l'évolution des médailles du pays sélectionné par année
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+### Services principaux
+- **`loadInitialData()`** : Charge les données depuis `olympic.json`.  
+- **`getOlympics()`** : Retourne un `Observable` des données.  
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
 
-You're now ready to implement the requested features.
+### Modèles de données
 
-Good luck!
+**Olympic** : Représente un pays avec ses participations
+```typescript
+{
+  id: number;
+  country: string;
+  participations: Participation[];
+}
+```
+
+**Participation** : Représente la participation d'un pays à une édition
+```typescript
+{
+  id: number;
+  year: number;
+  city: string;
+  medalsCount: number;
+  athleteCount: number;
+}
+```
+
+## 🔧 Commandes utiles
+
+```bash
+# Tests
+ng test
+
+# Build de production
+ng build --prod
+
+# Analyse du bundle
+ng build --stats-json
+npx webpack-bundle-analyzer dist/stats.json
+```
+
+## 📊 Données
+Les données sont mockées dans `src/assets/mock/olympic.json` et contiennent les informations de 5 pays sur 3 éditions olympiques (2012, 2016, 2020).
