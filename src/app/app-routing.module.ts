@@ -9,6 +9,10 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
+    path: 'detail/:country',
+    loadComponent: () => import('./pages/detail/detail.component').then(m => m.DetailComponent)
+  },
+  {
     path: '**', // wildcard
     component: NotFoundComponent,
   },

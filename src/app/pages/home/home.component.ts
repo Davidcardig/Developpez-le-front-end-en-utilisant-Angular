@@ -1,47 +1,81 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Router } from '@angular/router';
+import { HoverInfo, EventData } from 'src/app/core/models/ChartsData';
+import { Participation } from 'src/app/core/models/Participation';
 
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   chartData: any[] = [];
   numberJO?: number;
   numberCountries?: number;
-  hoverInfo?: { name: string; value: number; x: number; y: number }
-      constructor(private olympicService: OlympicService) {}
+  hoverInfo?: HoverInfo;
+  chartView: [number, number] = [700, 500];
+  private destroy$ = new Subject<void>();
+  
+  constructor(private olympicService: OlympicService, private router: Router) {}
 
   ngOnInit(): void {
-    this.olympicService.getOlympics().subscribe(olympics => {
-      this.getOlympicsData();
-      this.numberJO = new Set(olympics?.flatMap(item => item.participations.map((p: any) => p.year))).size;
-      this.numberCountries = new Set(olympics?.map(item => item.country)).size;
-    });
+    this.chartSize();
+    this.olympicService.getOlympics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(olympics => {
+        this.getOlympicsData(olympics);
+        this.numberJO = new Set(olympics?.flatMap(item => item.participations.map((p: any) => p.year))).size;
+        this.numberCountries = olympics?.length;
+      });
   }
 
 
-  public getOlympicsData(): void {
-    this.olympicService.getOlympics().subscribe(data => {
-      const olympics = data ?? [];
-      this.chartData = olympics.map(item => ({
-        name: item.country,
-        value: item.participations.reduce((total, p) => total + (p.medalsCount || 0), 0)
-      }));
-    });
+  // Mise à jour de la taille du graphique accueil
+  @HostListener('window:resize', ['$event'])
+  private chartSize(): void {
+    const width = window.innerWidth;
+    if (width <= 480) {
+      this.chartView = [450, 350];
+    } else if (width <= 768) {
+      this.chartView = [500, 400];
+    } else if (width <= 1024) { 
+      this.chartView = [600, 450];
+    } 
+    
+  }
+  
+  private getOlympicsData(data: any): void {
+    const olympics = data ?? [];
+    this.chartData = olympics.map((o: any) => ({
+      name: o.country,
+      value: o.participations.reduce((total: number, p: Participation) => total + (p.medalsCount || 0), 0)
+    }));
   }
 
+
+   // navigation vers la page détail au clic d'un pays
+  Select(event: EventData): void {
+    const name = this.getCountryName(event);
+    this.router.navigate(['detail', encodeURIComponent(name)]);
+  }
+
+  
+   private getCountryName(event: EventData): string {
+      return event.name || event.value?.name || '';
+    }
   // activation de la bulle d'infos
-  onActivate(event: any): void {
-    const name = this.olympicService.getCountryName(event);
+  onActivate(event: EventData): void {
+const name = this.getCountryName(event);
     const value = this.olympicService.getMedalCount(name);
-    this.hoverInfo = { name, value, x: 0, y: 0 };
+    this.hoverInfo = { name, value, x: 0, y: 0 }; 
   }
 
   // désactivation de la bulle d'infos
-  onDeactivate(_: any): void {
+  onDeactivate(): void {
     this.hoverInfo = undefined;
   }
 
@@ -51,7 +85,6 @@ export class HomeComponent implements OnInit {
     const offsetY = 60;
 
     if (this.hoverInfo) {
-
       this.hoverInfo = {
         ...this.hoverInfo,
         x: evt.clientX + offsetX,
@@ -60,4 +93,9 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //Néttoyer les abonnements
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

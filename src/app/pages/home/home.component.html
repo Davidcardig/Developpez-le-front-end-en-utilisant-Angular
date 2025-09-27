@@ -15,23 +15,19 @@
   <div class="chart-container" (mousemove)="onMouseMove($event)">
     <ngx-charts-pie-chart
     [results]="chartData"
-    [gradient]="false"
     [animations]="true"
     [labels]="true"
-    [doughnut]="false"
-    [explodeSlices]="false"
-    [gradient]="false"
-    [view]="[700, 500]"
-    [legend]="false"
+    [view]="chartView"
     [tooltipDisabled]="true"
+    (select)="Select($event)"
     (activate)="onActivate($event)"
-    (deactivate)="onDeactivate($event)"
+    (deactivate)="onDeactivate()"
     >
   
   </ngx-charts-pie-chart> 
- <div *ngIf="hoverInfo" class="bulleInfos" [ngStyle]="{'top.px': hoverInfo.y, 'left.px': hoverInfo.x}">
-    <div>{{ hoverInfo.name }}</div>
-    <div>🏅 {{ hoverInfo.value }}</div>
+ <div *ngIf="hoverInfo" class="bulleInfos" [ngStyle]="{'top.px': hoverInfo!.y, 'left.px': hoverInfo!.x}">
+    <div>{{ hoverInfo!.name }}</div>
+    <div> <i class="fa-solid fa-medal"></i>{{ hoverInfo!.value }}</div>
     <span class="bulleWindow"></span>
   </div>
   </div>

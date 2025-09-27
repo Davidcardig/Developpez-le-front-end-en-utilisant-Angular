@@ -1,16 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, tap, map, take } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
+import { EventData, DetailsData } from '../models/ChartsData';
+import { Participation } from '../models/Participation';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
-  private olympics$ = new BehaviorSubject<Olympic[] | null | undefined>(undefined);
- 
+  private olympics$ = new BehaviorSubject<Olympic[]>([]);
+
   constructor(private http: HttpClient) {}
 
   loadInitialData() {
@@ -18,27 +20,55 @@ export class OlympicService {
       tap((value) => this.olympics$.next(value)),
       catchError((error, caught) => {
         // TODO: improve error handling
-        console.error(error);
+        console.error('Error loading Olympic data', error);
         // can be useful to end loading state and let the user know something went wrong
-        this.olympics$.next(null);
+        this.olympics$.next([]);
         return caught;
       })
     );
   } 
 
-  getOlympics() {
+  // renvoie un observable pour s'abonner aux données des Olympics
+  public getOlympics() : Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
-  
-  public getCountryName(event: any): string {
-    if (typeof event?.value?.name === 'string') return event.value.name;
-    return '';
+  public getMedalCount(country: string): number {
+    let count = 0;
+    this.olympics$.pipe(take(1)).subscribe((data: Olympic[]) => {
+      const entry = data.find((olympic: Olympic) => olympic.country === country);
+      if (entry) {
+        count = entry.participations.reduce((total: number, p: Participation) => total + (p.medalsCount || 0), 0);
+      }
+    });
+    return count;
   }
 
-  public getMedalCount(country: string): number {
-    const olympics = this.olympics$.getValue() || [];
-    const found: Olympic | undefined = olympics.find(o => o.country === country);
-    return found?.participations.reduce((total, p) => total + (p.medalsCount || 0), 0) || 0;
+
+  // Récupère les détails d'un pays spécifique
+  public getCountryDetails(country: string): Observable<DetailsData | null> {
+    return this.olympics$.pipe(
+      map((list: Olympic[]) => {
+        const data = list;
+        const entry = data.find((olympic) => olympic.country === country);
+        if (!entry) return null;
+        const parts = entry.participations;
+        
+        // Création directe de la série de médailles triée par année
+        const medalsSeries = [{
+          name: country,
+          series: parts
+            .map(p => ({name: p.year, value: p.medalsCount}))
+        }];
+
+        return {
+          medalsSeries,
+          totalParticipations: parts.length || 0,
+          totalMedals: parts.reduce((total, p) => total + (p.medalsCount || 0), 0),
+          totalAthletes: parts.reduce((total, p) => total + (p.athleteCount || 0), 0) 
+        };
+      })
+    );
   }
 }
+
