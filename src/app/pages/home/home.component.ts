@@ -5,7 +5,7 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Router } from '@angular/router';
 import { HoverInfo, EventData } from 'src/app/core/models/ChartsData';
 import { Participation } from 'src/app/core/models/Participation';
-
+import { SummaryCardComponent } from 'src/app/shared/components/summary-card/summary-card.component';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +16,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   chartData: any[] = [];
   numberJO?: number;
   numberCountries?: number;
+  summaryCards: HoverInfo[] = [];
   hoverInfo?: HoverInfo;
   chartView: [number, number] = [700, 500];
   private destroy$ = new Subject<void>();
-  
+
+
   constructor(private olympicService: OlympicService, private router: Router) {}
 
   ngOnInit(): void {
@@ -30,6 +32,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.getOlympicsData(olympics);
         this.numberJO = new Set(olympics?.flatMap(item => item.participations.map((p: any) => p.year))).size;
         this.numberCountries = olympics?.length;
+        this.summaryCards = [
+          { name: 'Number of JO', value: this.numberJO },
+          { name: 'Number of countries', value: this.numberCountries },
+        ];
       });
   }
 
@@ -39,15 +45,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   private chartSize(): void {
     const width = window.innerWidth;
     if (width <= 480) {
-      this.chartView = [450, 350];
+      this.chartView = [400, 300];
     } else if (width <= 768) {
-      this.chartView = [500, 400];
-    } else if (width <= 1024) { 
-      this.chartView = [600, 450];
-    } 
-    
+      this.chartView = [450, 400];
+    } else if (width <= 1024) {
+      this.chartView = [800, 450];
+    }
   }
-  
+
   private getOlympicsData(data: any): void {
     const olympics = data ?? [];
     this.chartData = olympics.map((o: any) => ({
@@ -63,7 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['detail', encodeURIComponent(name)]);
   }
 
-  
+
    private getCountryName(event: EventData): string {
       return event.name || event.value?.name || '';
     }
@@ -71,27 +76,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   onActivate(event: EventData): void {
 const name = this.getCountryName(event);
     const value = this.olympicService.getMedalCount(name);
-    this.hoverInfo = { name, value, x: 0, y: 0 }; 
+    this.hoverInfo = { name, value, x: 0, y: 0 };
   }
-
-  // désactivation de la bulle d'infos
-  onDeactivate(): void {
-    this.hoverInfo = undefined;
-  }
-
-  // bulle d'infos qui suit la souris
-  onMouseMove(evt: MouseEvent): void {
+// bulle d'infos qui suit la souris
+  onMouseMove(event: MouseEvent): void {
     const offsetX = -10;
     const offsetY = 60;
 
     if (this.hoverInfo) {
       this.hoverInfo = {
         ...this.hoverInfo,
-        x: evt.clientX + offsetX,
-        y: evt.clientY - offsetY
+        x: event.clientX + offsetX,
+        y: event.clientY - offsetY
       };
     }
   }
+  // désactivation de la bulle d'infos
+  onDeactivate(): void {
+    this.hoverInfo = undefined;
+  }
+
+
 
   //Néttoyer les abonnements
   ngOnDestroy(): void {

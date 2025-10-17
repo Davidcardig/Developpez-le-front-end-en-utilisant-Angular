@@ -4,7 +4,7 @@
   align-items: center;
   margin-bottom: 32px;
   padding: 0 16px;
-  
+
   @media (max-width: 480px) {
     padding: 0 8px;
     margin-bottom: 16px;
@@ -22,13 +22,13 @@
   text-align: center;
   width: 100%;
   max-width: 600px;
-  
+
   @media (max-width: 768px) {
     font-size: 1.75rem;
     padding: 10px 16px;
     margin-bottom: 16px;
   }
-  
+
   @media (max-width: 480px) {
     font-size: 1.5rem;
     padding: 8px 16px;
@@ -36,83 +36,30 @@
   }
 }
 
-.row {
+.summary-cards {
   display: flex;
-  gap: 32px;
-  margin-bottom: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 800px;
-  
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+
   @media (max-width: 768px) {
-    gap: 16px;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  @media (max-width: 480px) {
-    gap: 8px;
-    margin-bottom: 8px;
-  }
+
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
 }
 
-.cardBox {
-  border: 2px solid #26989a;
-  border-radius: 10px;
-  padding: 16px 32px;
-  min-width: 150px;
-  text-align: center;
-  background:  #fff;
-  flex: 1;
-  max-width: 250px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
-  
-  @media (max-width: 768px) {
-    max-width: 300px;
-    width: 100%;
-    padding: 16px;
-  }
-  
-  @media (max-width: 480px) {
-    min-width: unset;
-    padding: 12px 16px;
-    max-width: 280px;
-  }
-}
 
-.cardLabel {
-  color: #222;
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-  font-weight: 500;
-  
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
-}
-
-.cardValue {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #222;
-  
-  @media (max-width: 480px) {
-    font-size: 1.3rem;
-  }
-}
 
 .chart-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  position: relative;
-  padding: 16px;
-  
-  
+  max-width: 100%;
+
 }
 
 .bulleInfos {
@@ -126,7 +73,7 @@
   z-index: 1000;
   pointer-events: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  
+
   @media (max-width: 480px) {
     font-size: 0.8rem;
     padding: 4px 8px;
@@ -140,7 +87,7 @@
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid #26989a;
-  
+
   @media (max-width: 480px) {
     border-left-width: 4px;
     border-right-width: 4px;

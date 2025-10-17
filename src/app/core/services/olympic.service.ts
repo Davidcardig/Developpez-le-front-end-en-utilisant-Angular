@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap, map, take } from 'rxjs/operators';
 import { Olympic } from '../models/Olympic';
-import { EventData, DetailsData } from '../models/ChartsData';
+import { DetailsData } from '../models/ChartsData';
 import { Participation } from '../models/Participation';
 
 @Injectable({
@@ -26,19 +26,20 @@ export class OlympicService {
         return caught;
       })
     );
-  } 
+  }
 
   // renvoie un observable pour s'abonner aux données des Olympics
   public getOlympics() : Observable<Olympic[]> {
     return this.olympics$.asObservable();
   }
 
+// renvoie le nombre total de médailles pour un pays donné
   public getMedalCount(country: string): number {
     let count = 0;
     this.olympics$.pipe(take(1)).subscribe((data: Olympic[]) => {
       const entry = data.find((olympic: Olympic) => olympic.country === country);
       if (entry) {
-        count = entry.participations.reduce((total: number, p: Participation) => total + (p.medalsCount || 0), 0);
+        count = entry.participations.reduce((total: number, p: Participation) => total + (p.medalsCount), 0);
       }
     });
     return count;
@@ -49,23 +50,20 @@ export class OlympicService {
   public getCountryDetails(country: string): Observable<DetailsData | null> {
     return this.olympics$.pipe(
       map((list: Olympic[]) => {
-        const data = list;
-        const entry = data.find((olympic) => olympic.country === country);
+        const entry = list.find((olympic) => olympic.country === country);
         if (!entry) return null;
         const parts = entry.participations;
-        
         // Création directe de la série de médailles triée par année
         const medalsSeries = [{
           name: country,
           series: parts
             .map(p => ({name: p.year, value: p.medalsCount}))
         }];
-
         return {
           medalsSeries,
-          totalParticipations: parts.length || 0,
-          totalMedals: parts.reduce((total, p) => total + (p.medalsCount || 0), 0),
-          totalAthletes: parts.reduce((total, p) => total + (p.athleteCount || 0), 0) 
+          totalParticipations: parts.length,
+          totalMedals: parts.reduce((total, participation) => total + (participation.medalsCount), 0),
+          totalAthletes: parts.reduce((total, participation) => total + (participation.athleteCount), 0)
         };
       })
     );

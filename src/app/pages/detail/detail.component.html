@@ -1,30 +1,23 @@
-<button type="button" (click)="goHome()">Back Home</button>
 <div class="container">
+	@if (showBack) {
+  <button type="button" (click)="goHome()">Back Home</button>
+}
 
-	<h2 class="title" >{{ country }}</h2>
+  <h2 class="title" >{{ country }}</h2>
 
-	<div class="row">
-		<div class="cardBox">
-			<div class="cardLabel">Number of entries</div>
-			<div class="cardValue">{{ totalParticipations }}</div>
-		</div>
-		<div class="cardBox">
-			<div class="cardLabel">Total number medals</div>
-			<div class="cardValue">{{ totalMedals }}</div>
-		</div>
-		<div class="cardBox">
-			<div class="cardLabel">Total number of athletes</div>
-			<div class="cardValue">{{ totalAthletes }}</div>
-		</div>
-	</div>
+  <div class="summary-cards">
+    @for (card of summaryCards; track card) {
+      <app-summary-card [label]="card.name" [value]="card.value"></app-summary-card>
+    }
+  </div>
+
 
     <div class="chart-container">
 		<ngx-charts-line-chart
 			[results]="medalsSeries"
-			
 			[xAxis]="true"
 			[yAxis]="true"
-            [view]="chartView"
+      [view]="chartView"
 			[showXAxisLabel]="true"
 			[showYAxisLabel]="true"
 			[xAxisLabel]="'Dates'"

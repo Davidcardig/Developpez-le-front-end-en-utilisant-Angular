@@ -1,19 +1,14 @@
 <div class="container">
-    <div class="title">Medals per country</div>
-    <div class="row">
-      <div class="cardBox">
-        <div class="cardLabel">Number of JO</div>
-        <div class="cardValue">{{ numberJO }}</div>
-      </div>
-      <div class="cardBox">
-        <div class="cardLabel">Number of countries</div>
-        <div class="cardValue">{{ numberCountries }}</div>
-      </div>
-    </div>
+  <div class="title">Medals per country</div>
+  <div class="summary-cards">
+    <ng-container *ngFor="let card of summaryCards">
+      <app-summary-card [label]="card.name" [value]="card.value"></app-summary-card>
+    </ng-container>
   </div>
-  
-  <div class="chart-container" (mousemove)="onMouseMove($event)">
-    <ngx-charts-pie-chart
+</div>
+
+<div class="chart-container" (mousemove)="onMouseMove($event)">
+  <ngx-charts-pie-chart
     [results]="chartData"
     [animations]="true"
     [labels]="true"
@@ -22,12 +17,12 @@
     (select)="Select($event)"
     (activate)="onActivate($event)"
     (deactivate)="onDeactivate()"
-    >
-  
-  </ngx-charts-pie-chart> 
- <div *ngIf="hoverInfo" class="bulleInfos" [ngStyle]="{'top.px': hoverInfo!.y, 'left.px': hoverInfo!.x}">
+  >
+
+  </ngx-charts-pie-chart>
+  <div *ngIf="hoverInfo" class="bulleInfos" [ngStyle]="{'top.px': hoverInfo!.y, 'left.px': hoverInfo!.x}">
     <div>{{ hoverInfo!.name }}</div>
     <div> <i class="fa-solid fa-medal"></i>{{ hoverInfo!.value }}</div>
     <span class="bulleWindow"></span>
   </div>
-  </div>
+</div>

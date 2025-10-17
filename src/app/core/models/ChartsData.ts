@@ -2,13 +2,13 @@ export interface EventData {
     value? : { name: string; };
       name: string;
 }
-   
+
 
 export interface HoverInfo {
   name: string;
   value: number;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface DetailsData {
