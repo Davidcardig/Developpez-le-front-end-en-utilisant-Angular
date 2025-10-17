@@ -1,0 +1,61 @@
+:host { display: block; }
+
+.row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.cardBox {
+  border: 2px solid #26989a;
+  border-radius: 10px;
+  padding: 16px 62px;
+  min-width: 10%;
+  max-width: 70%;
+  text-align: center;
+  background: #fff;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+
+  @media (max-width: 768px) {
+    max-width: 30%;
+    width: 90%;
+    padding: 15px 100px;
+
+  }
+
+  @media (max-width: 480px) {
+    max-width: 30%;
+    width: 90%;
+    padding: 15px 90px;
+  }
+
+}
+
+.cardLabel {
+  color: #222;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+}
+
+.cardValue {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #222;
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+  }
+}
+
